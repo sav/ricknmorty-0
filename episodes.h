@@ -55,7 +55,7 @@ class Episodes : public QWidget {
     QString url;
     int currentPage = 0;
     int pageSize;
-    int lastIndex;
+    int currentPageIndex;
     int initialEpisodesToFetch;
 };
 

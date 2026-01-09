@@ -52,7 +52,7 @@ void EpisodeCard::addCharacters(const QJsonArray &characterUrls) {
 }
 
 Episodes::Episodes(int pageSize, int initialEpisodesToFetch, QWidget *parent)
-    : QWidget(parent), pageSize(pageSize), lastIndex(0) {
+    : QWidget(parent), pageSize(pageSize), currentPageIndex(0) {
     layout = new QVBoxLayout();
     scrollArea = new QScrollArea(this);
     scrollContent = new QWidget(this);
@@ -75,24 +75,19 @@ Episodes::Episodes(int pageSize, int initialEpisodesToFetch, QWidget *parent)
 }
 
 void Episodes::fetch() {
+    auto handler = [=] (QJsonDocument document) {
+        this->document = document;
+        QJsonObject root = document.object();
+        json = root["results"].toArray();
+        url = root["info"].toObject()["next"].toString();
+	currentPageIndex = 0;
+        currentPage++;
+        nextPage();
+    };
     if (currentPage == 0) {
-        client->get(apiUrlEpisodes(1), [=](QJsonDocument document) {
-            this->document = document;
-            QJsonObject root = document.object();
-            json = root["results"].toArray();
-            url = root["info"].toObject()["next"].toString();
-            currentPage++;
-            nextPage();
-        });
+        client->get(apiUrlEpisodes(1), handler);
     } else if (!url.isEmpty()) {
-        client->get(url, [=](QJsonDocument document) {
-            this->document = document;
-            QJsonObject root = document.object();
-            json = root["results"].toArray();
-            url = root["info"].toObject()["next"].toString();
-            currentPage++;
-            nextPage();
-        });
+        client->get(url, handler);
     } else {
         fetchBtn->setEnabled(false);
         fetchBtn->setText("No more episodes...");
@@ -100,18 +95,17 @@ void Episodes::fetch() {
 }
 
 void Episodes::nextPage() {
+    int count = qMin(pageSize, json.size() - currentPageIndex);
 
-    int startIndex = lastIndex;
-    int count = qMin(pageSize, json.size() - startIndex);
     if (currentPage == 1 && initialEpisodesToFetch > 0) {
         count = qMin(initialEpisodesToFetch, count);
     }
 
     for (int i = 0; i < count; ++i) {
-        EpisodeCard *card = new EpisodeCard(json[startIndex + i].toObject(), scrollContent);
+        EpisodeCard *card = new EpisodeCard(json[currentPageIndex + i].toObject(), scrollContent);
         scrollLayout->addWidget(card);
     }
-    lastIndex += count;
+    currentPageIndex += count;
 
     if (url.isEmpty()) {
         fetchBtn->setEnabled(false);
