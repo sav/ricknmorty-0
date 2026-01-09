@@ -1,0 +1,33 @@
+#+title: ZRP Interview: Rick and Morty Episode Browser
+
+* DONE [core] rename classes
+CLOSED: [2026-01-09 Fri 01:39]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2026-01-09 Fri 01:39]
+:END:
+- [X] Card -> Characters
+- [X] Home -> Episodes
+* DONE [core] qapplication from sav/ricknmorty
+CLOSED: [2026-01-09 Fri 01:48]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2026-01-09 Fri 01:48]
+- State "TODO"       from              [2026-01-09 Fri 01:41]
+:END:
+* TODO [core] refactor to fetch the new API
+* TODO [ui] list initial episodes
+* TODO [ui] fetch next page
+* TODO [ui] make sure to stop on the last page
+don't duplicate episodes!
+* TODO [ui] show images
+* TODO [ui] style and colors
+:LOGBOOK:
+- State "TODO"       from              [2026-01-09 Fri 01:48]
+:END:
+* TODO [menu] about
+* TODO [doc] add README.md
+* TODO [doc] add LICENSE
+* TODO [doc] add docstrings (?)
+* TODO [extra] other ideas from sav/ricknmorty?
+:LOGBOOK:
+- State "TODO"       from              [2026-01-09 Fri 01:41]
+:END:
